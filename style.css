@@ -1,0 +1,211 @@
+/* --- 1. 基本設定とフォント --- */
+@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Exo', sans-serif;
+    color: #ecf0f1; /* 基本の文字色を白系に */
+    overflow-x: hidden; /* 横スクロールを防止 */
+}
+
+/* --- 2. 背景アニメーション --- */
+.area {
+    /* 要件に合わせて黒ベースのグラデーションに変更 */
+    background: #141E30;
+    background: -webkit-linear-gradient(to left, #243B55, #141E30);
+    width: 100%;
+    height: 100vh;
+    position: fixed; /* 背景を固定 */
+    top: 0;
+    left: 0;
+    z-index: -1; /* コンテンツの背面に配置 */
+}
+
+.circles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.circles li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    /* 円の色を緑系の半透明に */
+    background: rgba(46, 204, 113, 0.2);
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+}
+
+/* 各円のサイズやアニメーション設定 */
+.circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+.circles li:nth-child(2){ left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+.circles li:nth-child(3){ left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+.circles li:nth-child(4){ left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+.circles li:nth-child(5){ left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+.circles li:nth-child(6){ left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+.circles li:nth-child(7){ left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+.circles li:nth-child(8){ left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+.circles li:nth-child(9){ left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+.circles li:nth-child(10){ left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+@keyframes animate {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 0;
+    }
+    100% {
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 50%;
+    }
+}
+
+/* --- 3. 全体レイアウト (9:1分割) --- */
+.container {
+    display: flex;
+    padding: 20px;
+    width: 100%;
+}
+
+.main-content {
+    flex: 9; /* 9の割合 */
+    padding-right: 20px;
+}
+
+.sidebar {
+    flex: 1; /* 1の割合 */
+}
+
+/* --- 4. ロゴのスタイル --- */
+.logo-wrapper {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    margin: 0 auto 40px auto; /* 中央寄せと下に余白 */
+}
+
+.logo-wrapper #logo-webbab {
+    overflow: visible;
+}
+
+.logo-wrapper #logo-webbab .word {
+    fill: #FFFFFF; /* ロゴの文字色 */
+    opacity: 0;
+}
+
+.logo-wrapper #logo-webbab #mask #alpha {
+    fill: #FFFFFF;
+}
+
+.logo-wrapper #iso {
+    fill: #FFFFFF;
+    opacity: 0;
+    mask: url(#mask);
+}
+
+/* --- 5. コンテンツブロックのスタイル (マット調) --- */
+.content-block {
+    background: rgba(0, 0, 0, 0.3); /* 半透明の黒でマットな質感 */
+    backdrop-filter: blur(10px); /* すりガラス効果 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+#draggable-container .content-block {
+    cursor: move; /* ドラッグ可能であることを示すカーソル */
+}
+
+/* --- 6. テキストとリンクのスタイル --- */
+.content-block h2 {
+    font-size: 1.5em;
+    color: #2ecc71; /* 緑色をアクセントに */
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2ecc71;
+    display: inline-block;
+}
+
+.content-block ul {
+    list-style: none;
+}
+
+.content-block li {
+    margin-bottom: 20px;
+}
+
+.content-block h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: #f1c40f; /* サブタイトルに別のアクセントカラー */
+}
+
+.content-block p {
+    font-size: 0.95em;
+    line-height: 1.6;
+    opacity: 0.9; /* 少し透明度を下げて読みやすく */
+    margin-bottom: 8px;
+}
+
+.content-block a {
+    color: #3498db; /* リンク色 */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.content-block a:hover {
+    color: #5dade2;
+    text-decoration: underline;
+}
+
+.sidebar .content-block ul {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.sidebar .content-block a {
+    display: block;
+    padding: 10px;
+    background-color: rgba(46, 204, 113, 0.2);
+    border-radius: 5px;
+    text-align: center;
+    color: #2ecc71;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar .content-block a:hover {
+    background-color: #2ecc71;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+
+/* --- 7. その他 --- */
+[contenteditable="true"]:focus {
+    outline: 2px solid #2ecc71; /* 編集中の要素を分かりやすく */
+    background: rgba(46, 204, 113, 0.1);
+    border-radius: 4px;
+}
