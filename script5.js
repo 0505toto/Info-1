@@ -1,0 +1,150 @@
+// ========== SVGロゴアニメーション ==========
+function logoWebbab() {
+  const self = this;
+  self.wrapperLogo = $('.logo-wrapper');
+  self.svgLogo = $('#logo-webbab');
+  self.isoLogo = $('#logo-webbab #iso');
+  self.rhombusLogo = $('.rhombus');
+  self.logoCircle = $('.logo-circle');
+  self.logoEllipse = $('.logo-ellipse');
+  self.wordLogo = $('.word');
+
+  self.isDevice = (/android|webos|iphone|ipad|ipod|blackberry/i.test(navigator.userAgent.toLowerCase()));
+  self.mobileLogoColor = '#FFFFFF';
+  self.mobileLogo = '<svg xmlns="http://www.w3.org/2000/svg" ... 省略 ...></svg>'; // ※省略可（モバイル対策）
+
+  self.timer = 0.9;
+
+  self.init = function () {
+    if (!self.isDevice) {
+      self.setObj();
+      self.animation();
+    } else {
+      self.wrapperLogo.empty().append(self.mobileLogo);
+    }
+  };
+
+  self.setObj = function () {
+    gsap.set(self.isoLogo, { transformOrigin: "50% 50%", rotation: 90, scale: 0, autoAlpha: 1 });
+    gsap.set(self.logoCircle, { transformOrigin: "50% 50%", scale: 2, autoAlpha: 0 });
+    gsap.set(self.logoEllipse, { strokeWidth: 60, transformOrigin: "50% 50%", autoAlpha: 0 });
+  };
+
+  self.animation = function () {
+    function rhombusRotation() {
+      const tl = gsap.timeline();
+      tl.to(self.isoLogo, { duration: 0.6, autoAlpha: 1, scale: 1, ease: "power1.in" })
+        .to(self.isoLogo, { duration: 0.6, rotation: -45, ease: "power1.out" });
+      return tl;
+    }
+
+    function ellipsesAnimation() {
+      const tl = gsap.timeline();
+      self.logoEllipse.each(function (i, el) {
+        tl.to(el, {
+          duration: 0.4,
+          attr: { rx: 150, ry: 150 },
+          strokeWidth: 2,
+          autoAlpha: 1,
+          ease: "power2.out"
+        }, i * 0.2);
+      });
+      return tl;
+    }
+
+    function circleIntersection() {
+      return gsap.timeline().fromTo(self.logoCircle, {
+        autoAlpha: 0, scale: 0
+      }, {
+        autoAlpha: 1, scale: 1, duration: 0.4, ease: "cubic.inOut", stagger: 0.1
+      });
+    }
+
+    function textAnimation() {
+      return gsap.timeline().fromTo(self.wordLogo, {
+        autoAlpha: 0, scale: 0.8, x: -20
+      }, {
+        autoAlpha: 1, scale: 1, x: 0, duration: 1.5, ease: "elastic.out(1, 0.5)", stagger: 0.05
+      });
+    }
+
+    const master = gsap.timeline();
+    master.add(rhombusRotation())
+      .add(ellipsesAnimation(), "-=0.4")
+      .add(circleIntersection(), "-=0.3")
+      .add(textAnimation(), "-=0.5")
+      .timeScale(self.timer);
+
+    // Control
+    $('.play').on('click', function (e) {
+      e.preventDefault();
+      master.play();
+    });
+
+    $('.reverse').on('click', function (e) {
+      e.preventDefault();
+      master.reverse();
+    });
+  };
+}
+
+let runLogo;
+
+$(window).on('load', function () {
+  runLogo = new logoWebbab();
+  runLogo.init();
+});
+
+// ========== ドラッグ＆ドロップ機能 ==========
+function enableDragDrop() {
+  const container = document.getElementById("main-blocks");
+  let draggingEle;
+  let placeholder;
+  let isDraggingStarted = false;
+  let x = 0;
+
+  const mouseDownHandler = function (e) {
+    draggingEle = e.target.closest('.block');
+    x = e.clientY;
+
+    placeholder = document.createElement('div');
+    placeholder.classList.add('placeholder');
+    draggingEle.parentNode.insertBefore(placeholder, draggingEle.nextSibling);
+
+    draggingEle.classList.add('dragging');
+
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
+  };
+
+  const mouseMoveHandler = function (e) {
+    const dy = e.clientY - x;
+    draggingEle.style.transform = `translateY(${dy}px)`;
+
+    const prevEle = draggingEle.previousElementSibling;
+    const nextEle = placeholder.nextElementSibling;
+
+    if (prevEle && dy < -prevEle.offsetHeight / 2) {
+      container.insertBefore(placeholder, prevEle);
+    }
+    if (nextEle && dy > nextEle.offsetHeight / 2) {
+      container.insertBefore(placeholder, nextEle.nextSibling);
+    }
+  };
+
+  const mouseUpHandler = function () {
+    placeholder.parentNode.insertBefore(draggingEle, placeholder);
+    draggingEle.classList.remove('dragging');
+    draggingEle.style.removeProperty('transform');
+    placeholder && placeholder.remove();
+
+    document.removeEventListener('mousemove', mouseMoveHandler);
+    document.removeEventListener('mouseup', mouseUpHandler);
+  };
+
+  [...container.querySelectorAll('.block')].forEach(block => {
+    block.addEventListener('mousedown', mouseDownHandler);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', enableDragDrop);
