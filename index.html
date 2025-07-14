@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>PTinfo Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style5.css">
+  <link rel="stylesheet" href="style6.css">
 </head>
 <body>
 
@@ -24,17 +24,28 @@
       
       <!-- SVGロゴアニメーション -->
       <div class="logo-wrapper">
-        <!-- SVGコードここに入る（次のファイルでJSと共に） -->
-      </div>
+        <svg version="1.1" id="logo-webbab" xmlns="http://www.w3.org/2000/svg" ...>
+      <!-- 省略せず、すべて貼り付け -->
+     </svg>
+    </div>
+
 
       <!-- 各コンテンツブロック（ドラッグ＆ドロップ可能）-->
-      <div id="main-blocks" class="draggable-container">
-        <div class="block" contenteditable="true">■ PLANTEC共有</div>
-        <div class="block" contenteditable="true">■ 交通の手配先</div>
-        <div class="block" contenteditable="true">■ 会社情報</div>
-        <div class="block" contenteditable="true">■ 規則・制度</div>
-      </div>
+     <div id="main-blocks" class="draggable-container">
+  <div class="block" contenteditable="false">
+    <div class="block-header" tabindex="0">■ PLANTEC共有</div>
+    <div class="block-body">
+      <p><strong>▼ PT information</strong><br>
+      <a href="https://hz6n32v7pq52.cybozu.com/g/cabinet/download.csp/-/PT%E3%82%A4%E3%83%B3%E3%83%95%E3%82%A9%E3%83%A1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3.pdf?fid=80&ticket=&time=1751352079&hid=22&.pdf" target="_blank">PTインフォメーション</a></p>
+
+      <p><strong>▼ 申請用紙</strong><br>
+      <a href="https://hz6n32v7pq52.cybozu.com/g/cabinet/index.csp?hid=24&sf=1" target="_blank">紙での申請フォーマット</a></p>
     </div>
+  </div>
+
+  <!-- 以下、交通の手配先なども同じ構造で繰り返す -->
+</div>
+
 
     <!-- 右サイド（1割） -->
     <aside class="side-links">
@@ -61,6 +72,6 @@
   <!-- JavaScript -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="script5.js"></script>
+  <script src="script6.js"></script>
 </body>
 </html>
