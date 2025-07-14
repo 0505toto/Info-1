@@ -1,150 +1,222 @@
-// ========== SVGロゴアニメーション ==========
-function logoWebbab() {
-  const self = this;
-  self.wrapperLogo = $('.logo-wrapper');
-  self.svgLogo = $('#logo-webbab');
-  self.isoLogo = $('#logo-webbab #iso');
-  self.rhombusLogo = $('.rhombus');
-  self.logoCircle = $('.logo-circle');
-  self.logoEllipse = $('.logo-ellipse');
-  self.wordLogo = $('.word');
+/* フォント */
+@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
 
-  self.isDevice = (/android|webos|iphone|ipad|ipod|blackberry/i.test(navigator.userAgent.toLowerCase()));
-  self.mobileLogoColor = '#FFFFFF';
-  self.mobileLogo = '<svg xmlns="http://www.w3.org/2000/svg" ... 省略 ...></svg>'; // ※省略可（モバイル対策）
-
-  self.timer = 0.9;
-
-  self.init = function () {
-    if (!self.isDevice) {
-      self.setObj();
-      self.animation();
-    } else {
-      self.wrapperLogo.empty().append(self.mobileLogo);
-    }
-  };
-
-  self.setObj = function () {
-    gsap.set(self.isoLogo, { transformOrigin: "50% 50%", rotation: 90, scale: 0, autoAlpha: 1 });
-    gsap.set(self.logoCircle, { transformOrigin: "50% 50%", scale: 2, autoAlpha: 0 });
-    gsap.set(self.logoEllipse, { strokeWidth: 60, transformOrigin: "50% 50%", autoAlpha: 0 });
-  };
-
-  self.animation = function () {
-    function rhombusRotation() {
-      const tl = gsap.timeline();
-      tl.to(self.isoLogo, { duration: 0.6, autoAlpha: 1, scale: 1, ease: "power1.in" })
-        .to(self.isoLogo, { duration: 0.6, rotation: -45, ease: "power1.out" });
-      return tl;
-    }
-
-    function ellipsesAnimation() {
-      const tl = gsap.timeline();
-      self.logoEllipse.each(function (i, el) {
-        tl.to(el, {
-          duration: 0.4,
-          attr: { rx: 150, ry: 150 },
-          strokeWidth: 2,
-          autoAlpha: 1,
-          ease: "power2.out"
-        }, i * 0.2);
-      });
-      return tl;
-    }
-
-    function circleIntersection() {
-      return gsap.timeline().fromTo(self.logoCircle, {
-        autoAlpha: 0, scale: 0
-      }, {
-        autoAlpha: 1, scale: 1, duration: 0.4, ease: "cubic.inOut", stagger: 0.1
-      });
-    }
-
-    function textAnimation() {
-      return gsap.timeline().fromTo(self.wordLogo, {
-        autoAlpha: 0, scale: 0.8, x: -20
-      }, {
-        autoAlpha: 1, scale: 1, x: 0, duration: 1.5, ease: "elastic.out(1, 0.5)", stagger: 0.05
-      });
-    }
-
-    const master = gsap.timeline();
-    master.add(rhombusRotation())
-      .add(ellipsesAnimation(), "-=0.4")
-      .add(circleIntersection(), "-=0.3")
-      .add(textAnimation(), "-=0.5")
-      .timeScale(self.timer);
-
-    // Control
-    $('.play').on('click', function (e) {
-      e.preventDefault();
-      master.play();
-    });
-
-    $('.reverse').on('click', function (e) {
-      e.preventDefault();
-      master.reverse();
-    });
-  };
+/* 基本リセット */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-let runLogo;
-
-$(window).on('load', function () {
-  runLogo = new logoWebbab();
-  runLogo.init();
-});
-
-// ========== ドラッグ＆ドロップ機能 ==========
-function enableDragDrop() {
-  const container = document.getElementById("main-blocks");
-  let draggingEle;
-  let placeholder;
-  let isDraggingStarted = false;
-  let x = 0;
-
-  const mouseDownHandler = function (e) {
-    draggingEle = e.target.closest('.block');
-    x = e.clientY;
-
-    placeholder = document.createElement('div');
-    placeholder.classList.add('placeholder');
-    draggingEle.parentNode.insertBefore(placeholder, draggingEle.nextSibling);
-
-    draggingEle.classList.add('dragging');
-
-    document.addEventListener('mousemove', mouseMoveHandler);
-    document.addEventListener('mouseup', mouseUpHandler);
-  };
-
-  const mouseMoveHandler = function (e) {
-    const dy = e.clientY - x;
-    draggingEle.style.transform = `translateY(${dy}px)`;
-
-    const prevEle = draggingEle.previousElementSibling;
-    const nextEle = placeholder.nextElementSibling;
-
-    if (prevEle && dy < -prevEle.offsetHeight / 2) {
-      container.insertBefore(placeholder, prevEle);
-    }
-    if (nextEle && dy > nextEle.offsetHeight / 2) {
-      container.insertBefore(placeholder, nextEle.nextSibling);
-    }
-  };
-
-  const mouseUpHandler = function () {
-    placeholder.parentNode.insertBefore(draggingEle, placeholder);
-    draggingEle.classList.remove('dragging');
-    draggingEle.style.removeProperty('transform');
-    placeholder && placeholder.remove();
-
-    document.removeEventListener('mousemove', mouseMoveHandler);
-    document.removeEventListener('mouseup', mouseUpHandler);
-  };
-
-  [...container.querySelectorAll('.block')].forEach(block => {
-    block.addEventListener('mousedown', mouseDownHandler);
-  });
+body {
+  font-family: 'Exo', sans-serif;
+  height: 100vh;
+  background-color: #121212;
+  color: #f5f5f5;
+  overflow: hidden;
 }
 
-document.addEventListener('DOMContentLoaded', enableDragDrop);
+/* 背景アニメーション */
+.area {
+  background: -webkit-linear-gradient(to left, #0f0f0f, #1a1a1a);
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.circles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.circles li {
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  animation: animate 25s linear infinite;
+  bottom: -150px;
+  border-radius: 50%;
+}
+
+@keyframes animate {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    border-radius: 0;
+  }
+  100% {
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+    border-radius: 50%;
+  }
+}
+
+/* 円サイズランダム化 */
+.circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+.circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+.circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+.circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+.circles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+.circles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+.circles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+.circles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+.circles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+.circles li:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+/* レイアウト */
+.layout {
+  display: flex;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* メイン9割 */
+.main-content {
+  flex: 9;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* サイド1割 */
+.side-links {
+  flex: 1;
+  background-color: #1f1f1f;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.quick-links a {
+  display: block;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: #2c2c2c;
+  color: #a0ff9f;
+  text-decoration: none;
+  border-left: 4px solid #50fa7b;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.quick-links a:hover {
+  background-color: #333;
+}
+
+/* ロゴアニメーション中央配置 */
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  max-width: 100%;
+}
+
+#logo-webbab {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ドラッグ＆ドロップの項目 */
+.draggable-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.block {
+  background-color: #222;
+  padding: 1rem;
+  border-left: 5px solid #50fa7b;
+  border-radius: 8px;
+  cursor: grab;
+  font-weight: bold;
+  user-select: none;
+}
+
+.block:focus {
+  outline: 2px dashed #50fa7b;
+}
+
+/* ドラッグ中 */
+.dragging {
+  opacity: 0.6;
+  transform: rotate(1deg);
+}
+
+/* プレースホルダー */
+.placeholder {
+  height: 50px;
+  border: 2px dashed #50fa7b;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+/* アニメーションコントロール */
+.control {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.control ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.control a {
+  color: #fff;
+  background: #333;
+  padding: 0.5rem 1rem;
+  border: 1px solid #50fa7b;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.control a:hover {
+  background: #50fa7b;
+  color: #000;
+}
+.block-header {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #a0ff9f;
+}
+
+.block-body {
+  margin-top: 0.5rem;
+  display: none;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.block.open .block-body {
+  display: block;
+}
+
+.block-body a {
+  color: #80ffb0;
+  text-decoration: underline;
+}
+
+.block-body a:hover {
+  color: #caffc0;
+}
