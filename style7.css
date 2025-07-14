@@ -1,0 +1,299 @@
+/* --- Google Fontsのインポート --- */
+@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+
+/* --- 基本設定と変数 --- */
+:root {
+    --bg-color: #1a1a1a;
+    --primary-color: #00ff88;
+    --text-color: #ffffff;
+    --section-bg-color: #2c2c2c;
+    --border-color: rgba(0, 255, 136, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Exo', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    height: 100%;
+    overflow-x: hidden; /* 横スクロールバーを防止 */
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #a7ffdb;
+}
+
+ul {
+    list-style: none;
+}
+
+/* --- スクロールバーのスタイル --- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #2c2c2c;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a7ffdb;
+}
+
+/* --- 背景アニメーション (ご提供コード) --- */
+.area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+}
+
+.circles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.circles li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 255, 136, 0.15); /* 色を緑系に変更 */
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+}
+
+.circles li:nth-child(1){ left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+.circles li:nth-child(2){ left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+.circles li:nth-child(3){ left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+.circles li:nth-child(4){ left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+.circles li:nth-child(5){ left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+.circles li:nth-child(6){ left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+.circles li:nth-child(7){ left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+.circles li:nth-child(8){ left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+.circles li:nth-child(9){ left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+.circles li:nth-child(10){ left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+@keyframes animate {
+    0%{ transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
+    100%{ transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+}
+
+/* --- オープニングロゴ (ご提供コードをCSSに変換・調整) --- */
+.logo-wrapper {
+    position: fixed; /* JSで absolute -> fixed に変更 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    z-index: 100;
+    transition: top 1s ease-in-out, max-width 1s ease-in-out; /* 上に移動する際のアニメーション */
+}
+
+#logo-webbab {
+    overflow: visible;
+}
+#logo-webbab .word {
+    fill: var(--text-color);
+    opacity: 0;
+}
+#logo-webbab #mask #alpha {
+    fill: #fff;
+}
+#logo-webbab #iso {
+    fill: var(--text-color);
+    opacity: 0;
+    mask: url(#mask);
+}
+
+/* --- メインコンテンツのレイアウト --- */
+.page-content {
+    opacity: 0; /* 初期状態は非表示。JSで表示 */
+    visibility: hidden;
+    transition: opacity 1s ease, visibility 1s ease;
+    padding-top: 150px; /* ロゴが上に移動した後のスペース */
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    width: 95%;
+    max-width: 1600px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.main-content {
+    flex: 9;
+}
+
+.sidebar {
+    flex: 1;
+}
+
+/* --- 大項目セクションのスタイル --- */
+.draggable-section {
+    background: var(--section-bg-color);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.draggable-section:hover {
+    border-color: var(--border-color);
+    box-shadow: 0 6px 20px rgba(0, 255, 136, 0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* 振動アニメーションの適用 */
+.draggable-section:not(.open) .section-header:hover {
+    animation: vibration 0.2s linear infinite;
+}
+
+.section-title {
+    font-size: 1.2em;
+    color: var(--text-color);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.section-title:focus {
+    outline: 1px solid var(--primary-color);
+    border-radius: 4px;
+}
+
+.toggle-icon {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    transition: transform 0.4s ease;
+}
+.toggle-icon::before,
+.toggle-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 2px;
+    background-color: var(--primary-color);
+    transform: translate(-50%, -50%);
+    transition: transform 0.4s ease;
+}
+.toggle-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* 開いたときのアイコンの形 (×) */
+.draggable-section.open .toggle-icon {
+    transform: rotate(135deg);
+}
+
+
+.section-content {
+    max-height: 0; /* 初期状態は閉じる */
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+    padding: 0 20px;
+}
+/* 開いたときのスタイル */
+.draggable-section.open .section-content {
+    max-height: 1000px; /* 十分な高さを確保 */
+    padding: 0 20px 20px 20px;
+}
+
+
+.section-content ul li {
+    padding: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.section-content ul li:first-child {
+    border-top: none;
+}
+.section-content h3 {
+    margin-bottom: 8px;
+    color: var(--primary-color);
+    font-weight: 400;
+}
+.section-content p {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+.section-content p + a {
+    margin-top: 10px;
+    display: inline-block;
+}
+
+/* --- サイドバーのスタイル --- */
+.sidebar-content {
+    background: var(--section-bg-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    position: sticky; /* スクロールしても追従 */
+    top: 150px;
+}
+.sidebar-title {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+.sidebar-title:focus {
+    outline: 1px solid var(--primary-color);
+    border-radius: 4px;
+}
+.sidebar ul li a {
+    display: block;
+    padding: 10px 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+.sidebar ul li a:hover {
+    background-color: rgba(0, 255, 136, 0.1);
+}
+
+/* --- アニメーション定義 --- */
+@keyframes vibration {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(1deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-1deg); }
+    100% { transform: rotate(0deg); }
+}
